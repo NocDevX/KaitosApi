@@ -1,6 +1,6 @@
 <?php
 
-use Illuminate\Http\Request;
+use App\Http\Controllers\AuthController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -14,6 +14,25 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-    return $request->user();
+Route::get('/', function () {
+    return 'index';
+});
+
+Route::get('auth/register', [AuthController::class, 'register']);
+Route::get('auth/login', [AuthController::class, 'login']);
+
+Route::middleware('auth:sanctum')->group(function () {
+
+    Route::get('/user', function () {
+        return response()->json([
+            [
+                'name' => 'wallet_1',
+                'value' => '127000.00'
+            ],
+            [
+                'name' => 'wallet_2',
+                'value' => '720.40'
+            ]
+        ], 200);
+    });
 });
