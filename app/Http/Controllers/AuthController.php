@@ -46,9 +46,10 @@ class AuthController extends Controller
         }
 
         $user = $user->first();
+
         $user->tokens()->where('name', 'auth-token')->delete();
         $authToken = $user->createToken('auth-token')->plainTextToken;
 
-        return $authToken;
+        return response()->json(['token' => $authToken], 200);
     }
 }
