@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\Auth\CreateRequest;
+use App\Http\Requests\Auth\RegisterRequest;
 use App\Http\Requests\Auth\LoginRequest;
 use App\Models\User;
 use Illuminate\Support\Arr;
@@ -10,7 +10,7 @@ use Illuminate\Support\Facades\Hash;
 
 class AuthController extends Controller
 {
-    public function register(CreateRequest $request)
+    public function register(RegisterRequest $request)
     {
         $user = User::create([
             'name' => $request->name,
