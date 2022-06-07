@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 use Laravel\Sanctum\Http\Controllers\CsrfCookieController;
 
@@ -17,12 +18,11 @@ use Laravel\Sanctum\Http\Controllers\CsrfCookieController;
 
 Route::get('csrf_cookie', [CsrfCookieController::class, 'show']);
 
-Route::post('index', function () {
-    return 'index';
-});
+Route::post('auth/register', [AuthController::class, 'register'])->name('auth.register');
+Route::post('auth/login', [AuthController::class, 'login'])->name('auth.login');
 
-Route::post('auth/register', [AuthController::class, 'register']);
-Route::post('auth/login', [AuthController::class, 'login']);
+Route::post('users/forgot_password', [UserController::class, 'forgotPassword'])->name('password.request');
+Route::get('users/forgot_password/{token}', [UserController::class, 'resetPassword'])->name('password.reset');
 
 Route::middleware('auth:sanctum')->group(function () {
 
