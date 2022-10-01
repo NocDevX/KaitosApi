@@ -1,0 +1,23 @@
+name: basic
+
+on:
+  push:
+    branches: [ "actions" ]
+
+jobs:
+  teste-de-aplicacao:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: shivammathur/setup-php@v2
+      with:
+        php-version: '8.1'
+    - uses: actions/checkout@v3
+    - name: Definir arquivo de ambiente
+      run: php -r "file_exists('.env') || copy('.env.example', '.env');"
+    - name: Instalar dependências
+      run: composer install -q --no-interaction
+    - name: Verificar padrão de código
+      run: |
+        ./vendor/bin/phpcs --standard=PSR12 ./app
+        ./vendor/bin/phpcs --standard=PSR12 ./routes
