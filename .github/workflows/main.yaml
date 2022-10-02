@@ -46,7 +46,9 @@ jobs:
       run: composer install -q --no-interaction --no-progress
 
     - name: Criar banco
-      run: sudo -u postgres createdb kaitos
+      run: |
+        systemctl start postgresql
+        sudo -u postgres createdb kaitos
 
     - name: Executar migrations
       run: php artisan migrate -q --seed
