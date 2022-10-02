@@ -82,3 +82,6 @@ jobs:
 
     - name: Realizar testes
       run: php artisan test
+
+    - name: Rollback migrations
+      run: php artisan migrate:rollback
