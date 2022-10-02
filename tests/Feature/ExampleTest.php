@@ -14,7 +14,7 @@ class ExampleTest extends TestCase
      */
     public function testExample()
     {
-        $request = $this->postJson('/users/forgot_password', [
+        $request = $this->postJson('/api/users/forgot_password', [
             'email' => 'testemail@terra.com'
         ]);
         $request->assertStatus(200);
