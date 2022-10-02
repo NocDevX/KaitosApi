@@ -1,8 +1,9 @@
 name: Verificar funcionalidades
 
 on:
-  pull-request:
-    branches: [ "actions" ]
+  pull_request:
+    branches:  
+      - "actions"
 
 jobs:
   testes:

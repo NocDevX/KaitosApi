@@ -2,15 +2,17 @@ name: Testes qualitativos
 
 on:
   push:
-    branches: [ "actions" ]
+    branches: 
+      - "actions"
+
+env:
+  php-version: 8.1
+  postgres-version: 14
+  psr: PSR12
 
 jobs:
   padrao-de-codigo:
     runs-on: ubuntu-latest
-
-    env:
-      php-version: '8.1'
-      psr: 'PSR12'
 
     steps:
     - uses: shivammathur/setup-php@v2
@@ -39,16 +41,10 @@ jobs:
       DB_DATABASE: postgres
       APP_URL: localhost:8080
       DB_PORT: 5432
-      postgres-version: '14'
-      php-version: '8.1'
     
     services:
       postgres:
         image: ${{ env.postgres-version }}
-        env:
-          POSTGRES_USER: postgres
-          POSTGRES_PASSWORD: postgres
-          POSTGRES_DB: postgres
         ports:
           - 5432:5432
         options: >-
