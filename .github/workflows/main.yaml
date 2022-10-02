@@ -27,28 +27,36 @@ jobs:
 
   testes:
     runs-on: ubuntu-latest
+    
+    services:
+      postgres:
+        image: postgres:14
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_DB: kaitos
+        ports:
+          - 5432:5432
 
     steps:
     - uses: shivammathur/setup-php@v2
       with:
         php-version: '8.1'
-
-    - uses: harmon758/postgresql-action@v1
-      with:
-        postgresql version: '11'
-
+    
     - uses: actions/checkout@v3
 
     - name: Definir arquivo de ambiente
-      run: php -r "copy('.env.testing', '.env');"
+      run: php -r "file_exists('.env') || copy('.env.example', '.env');"
     
     - name: Instalar Dependências
       run: composer install -q --no-interaction --no-progress
 
     - name: Criar banco
+      env:
+        DATABASE_USER: postgres
+        DATABASE_PORT: 5432
+        POSTGRES_DB: kaitos
       run: |
-        systemctl start postgresql
-        sudo -u postgres createdb kaitos
+        createdb kaitos
 
     - name: Executar migrations
       run: php artisan migrate -q --seed
