@@ -1,7 +1,7 @@
 name: Verificar funcionalidades
 
 on:
-  pull:
+  pull-request:
     branches: [ "actions" ]
 
 jobs:

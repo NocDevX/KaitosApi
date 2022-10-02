@@ -8,16 +8,14 @@ jobs:
   padrao-de-codigo:
     runs-on: ubuntu-latest
 
-    strategy:
-      fail-fast: false
-      matrix:
-        php-version: '8.1'
-        psr: 'PSR12'
+    env:
+      php-version: '8.1'
+      psr: 'PSR12'
 
     steps:
     - uses: shivammathur/setup-php@v2
       with:
-        php-version: ${{ matrix.php-version }}
+        php-version: ${{ env.php-version }}
     - uses: actions/checkout@v3
 
     - name: Definir arquivo de ambiente
@@ -28,8 +26,8 @@ jobs:
 
     - name: Verificar padrão de código
       run: |
-        ./tests/vendor/bin/phpcs --standard=${{ matrix.psr }} ./app
-        ./tests/vendor/bin/phpcs --standard=${{ matrix.psr }} ./routes
+        ./tests/vendor/bin/phpcs --standard=${{ env.psr }} ./app
+        ./tests/vendor/bin/phpcs --standard=${{ env.psr }} ./routes
 
   testes:
     runs-on: ubuntu-latest
@@ -41,16 +39,12 @@ jobs:
       DB_DATABASE: postgres
       APP_URL: localhost:8080
       DB_PORT: 5432
-
-    strategy:
-    fail-fast: false
-    matrix:
       postgres-version: '14'
       php-version: '8.1'
     
     services:
       postgres:
-        image: ${{ matrix.postgres-version }}
+        image: ${{ env.postgres-version }}
         env:
           POSTGRES_USER: postgres
           POSTGRES_PASSWORD: postgres
@@ -67,7 +61,7 @@ jobs:
     - name: Setup PHP
       uses: shivammathur/setup-php@v2
       with:
-        php-version: ${{ matrix.php-version }}
+        php-version: ${{ env.php-version }}
         extensions: mbstring, fileinfo, pgsql
     
     - name: Checkout
