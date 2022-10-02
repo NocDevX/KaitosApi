@@ -33,18 +33,18 @@ jobs:
 
   testes:
     runs-on: ubuntu-latest
-    # env:
-    #   DB_HOST: localhost
-    #   DB_CONNECTION: pgsql
-    #   DB_PASSWORD: postgres
-    #   DB_USERNAME: postgres
-    #   DB_DATABASE: postgres
-    #   APP_URL: localhost:8080
-    #   DB_PORT: 5432
+    env:
+      DB_HOST: localhost
+      DB_CONNECTION: pgsql
+      DB_PASSWORD: postgres
+      DB_USERNAME: postgres
+      DB_DATABASE: postgres
+      APP_URL: localhost:8080
+      DB_PORT: 5432
     
     services:
       postgres:
-        image: ${{ env.postgres-version }}
+        image: postgres:${{ env.postgres-version }}
         ports:
           - 5432:5432
         options: >-
