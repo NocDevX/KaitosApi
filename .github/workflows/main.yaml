@@ -18,7 +18,7 @@ jobs:
       run: php -r "file_exists('.env') || copy('.env.example', '.env');"
 
     - name: Instalar Dependências
-      run: composer install -q --no-interaction --working-dir tests --no-progress
+      run: composer install -q --no-interaction --no-progress
 
     - name: Verificar padrão de código
       run: |
@@ -43,7 +43,7 @@ jobs:
       run: php -r "copy('.env.testing', '.env');"
     
     - name: Instalar Dependências
-      run: composer install -q --no-interaction --working-dir tests --no-progress
+      run: composer install -q --no-interaction --no-progress
 
     - name: Criar banco
       run: sudo -u postgres createdb kaitos
