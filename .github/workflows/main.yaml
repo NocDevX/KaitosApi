@@ -18,12 +18,12 @@ jobs:
       run: php -r "file_exists('.env') || copy('.env.example', '.env');"
 
     - name: Instalar Dependências
-      run: composer install -q --no-interaction --no-progress
+      run: composer require --working-dir tests -q --no-interaction --no-progress
 
     - name: Verificar padrão de código
       run: |
-        ./vendor/bin/phpcs --standard=PSR12 ./app
-        ./vendor/bin/phpcs --standard=PSR12 ./routes
+        ./tests/vendor/bin/phpcs --standard=PSR12 ./app
+        ./tests/vendor/bin/phpcs --standard=PSR12 ./routes
 
   testes:
     runs-on: ubuntu-latest
