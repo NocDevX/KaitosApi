@@ -1,7 +1,7 @@
 name: Verificar funcionalidades
 
 on:
-  push:
+  pull:
     branches: [ "actions" ]
 
 jobs:
