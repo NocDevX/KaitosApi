@@ -1,11 +1,11 @@
-name: Validar aplicação
+name: Verificar funcionalidades
 
 on:
   push:
     branches: [ "actions" ]
 
 jobs:
-  teste-de-aplicacao:
+  padrao-de-codigo:
     runs-on: ubuntu-latest
 
     steps:
@@ -13,11 +13,46 @@ jobs:
       with:
         php-version: '8.1'
     - uses: actions/checkout@v3
+
     - name: Definir arquivo de ambiente
       run: php -r "file_exists('.env') || copy('.env.example', '.env');"
-    - name: Instalar dependências
-      run: composer install -q --no-interaction
+
+    - name: Instalar Dependências
+      run: composer install -q --no-interaction --working-dir tests --no-progress
+
     - name: Verificar padrão de código
       run: |
         ./vendor/bin/phpcs --standard=PSR12 ./app
         ./vendor/bin/phpcs --standard=PSR12 ./routes
+
+  testes:
+    runs-on: ubuntu-latest
+
+    steps:
+    name: PHP
+    - uses: shivammathur/setup-php@v2
+      with:
+        php-version: '8.1'
+
+    name: Postgres
+    - uses: harmon758/postgresql-action@v1
+    with:
+      postgresql version: '11'
+    
+    name: Git checkout
+    - uses: actions/checkout@v3
+
+    - name: Definir arquivo de ambiente
+    run: php -r "copy('.env.testing', '.env');"
+
+    - name: Instalar Dependências
+    run: composer install -q --no-interaction --working-dir tests --no-progress
+
+    - name: Criar banco
+    run: sudo -u postgres createdb kaitos
+
+    - name: Executar migrations
+    run: php artisan migrate -q --seed
+
+    - name: Realizar testes
+    run: php artisan test

@@ -12,10 +12,11 @@ class ExampleTest extends TestCase
      *
      * @return void
      */
-    public function test_example()
+    public function testExample()
     {
-        $response = $this->get('/');
-
-        $response->assertStatus(200);
+        $request = $this->postJson('/users/forgot_password', [
+            'email' => 'testemail@terra.com'
+        ]);
+        $request->assertStatus(200);
     }
 }
