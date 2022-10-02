@@ -8,10 +8,16 @@ jobs:
   padrao-de-codigo:
     runs-on: ubuntu-latest
 
+    strategy:
+      fail-fast: false
+      matrix:
+        php-version: '8.1'
+        psr: 'PSR12'
+
     steps:
     - uses: shivammathur/setup-php@v2
       with:
-        php-version: '8.1'
+        php-version: ${{ matrix.php-version }}
     - uses: actions/checkout@v3
 
     - name: Definir arquivo de ambiente
@@ -22,8 +28,8 @@ jobs:
 
     - name: Verificar padrão de código
       run: |
-        ./tests/vendor/bin/phpcs --standard=PSR12 ./app
-        ./tests/vendor/bin/phpcs --standard=PSR12 ./routes
+        ./tests/vendor/bin/phpcs --standard=${{ matrix.psr }} ./app
+        ./tests/vendor/bin/phpcs --standard=${{ matrix.psr }} ./routes
 
   testes:
     runs-on: ubuntu-latest
@@ -33,10 +39,18 @@ jobs:
       DB_PASSWORD: postgres
       DB_USERNAME: postgres
       DB_DATABASE: postgres
+      APP_URL: localhost:8080
+      DB_PORT: 5432
+
+    strategy:
+    fail-fast: false
+    matrix:
+      postgres-version: '14'
+      php-version: '8.1'
     
     services:
       postgres:
-        image: postgres:14
+        image: ${{ matrix.postgres-version }}
         env:
           POSTGRES_USER: postgres
           POSTGRES_PASSWORD: postgres
@@ -53,7 +67,7 @@ jobs:
     - name: Setup PHP
       uses: shivammathur/setup-php@v2
       with:
-        php-version: '8.1'
+        php-version: ${{ matrix.php-version }}
         extensions: mbstring, fileinfo, pgsql
     
     - name: Checkout
@@ -71,12 +85,7 @@ jobs:
       run: php artisan config:clear
 
     - name: Executar migrations
-      env:
-        DB_PORT: 5432
       run: php artisan migrate -v --seed
 
     - name: Realizar testes
-      env:
-        DB_PORT: 5432
-        APP_URL: localhost:8080
       run: php artisan test
