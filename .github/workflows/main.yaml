@@ -4,6 +4,10 @@ on:
   push:
     branches: 
       - "actions"
+  pull_request:
+    branches:
+      - "main"
+      - "beta"
 
 env:
   php-version: 8.1
@@ -30,7 +34,7 @@ jobs:
         ./tests/vendor/bin/phpcs --standard=${{ env.psr }} ./app
         ./tests/vendor/bin/phpcs --standard=${{ env.psr }} ./routes
 
-  testes:
+  testes-estruturais:
     runs-on: ubuntu-latest
     env:
       DB_HOST: localhost
