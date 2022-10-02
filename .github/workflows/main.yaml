@@ -29,30 +29,30 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    name: PHP
+    - name: PHP
     - uses: shivammathur/setup-php@v2
       with:
         php-version: '8.1'
 
-    name: Postgres
+    - name: Postgres
     - uses: harmon758/postgresql-action@v1
-    with:
-      postgresql version: '11'
+      with:
+        postgresql version: '11'
     
-    name: Git checkout
+    - name: Git checkout
     - uses: actions/checkout@v3
 
     - name: Definir arquivo de ambiente
-    run: php -r "copy('.env.testing', '.env');"
-
+      run: php -r "copy('.env.testing', '.env');"
+    
     - name: Instalar Dependências
-    run: composer install -q --no-interaction --working-dir tests --no-progress
+      run: composer install -q --no-interaction --working-dir tests --no-progress
 
     - name: Criar banco
-    run: sudo -u postgres createdb kaitos
+      run: sudo -u postgres createdb kaitos
 
     - name: Executar migrations
-    run: php artisan migrate -q --seed
+      run: php artisan migrate -q --seed
 
     - name: Realizar testes
-    run: php artisan test
+      run: php artisan test
