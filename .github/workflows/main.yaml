@@ -3,7 +3,8 @@ name: Testes qualitativos
 on:
   push:
     branches: 
-      - "actions"
+      - "main"
+      - "beta"
   pull_request:
     branches:
       - "main"
