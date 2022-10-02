@@ -33,6 +33,7 @@ jobs:
         image: postgres:14
         env:
           POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: 1234
           POSTGRES_DB: kaitos
         ports:
           - 5432:5432
@@ -54,9 +55,9 @@ jobs:
       env:
         DATABASE_USER: postgres
         DATABASE_PORT: 5432
+        POSTGRES_HOST: 127.0.0.1
         POSTGRES_DB: kaitos
-      run: |
-        createdb kaitos
+      run: createdb kaitos
 
     - name: Executar migrations
       run: php artisan migrate -q --seed
