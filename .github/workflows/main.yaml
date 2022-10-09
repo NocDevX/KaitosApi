@@ -28,7 +28,7 @@ jobs:
       with:
         fetch-depth: 0
 
-    - name: Verificar nivelamentog
+    - name: Verificar nivelamento
       run: |
         COMMITS_BEHIND=$(git rev-list --count $GITHUB_REF_NAME..origin/main);
 
