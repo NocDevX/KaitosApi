@@ -5,6 +5,7 @@ on:
     branches: 
       - "main"
       - "beta"
+      - "actions"
   pull_request:
     branches:
       - "main"
@@ -15,6 +16,27 @@ env:
   psr: PSR12
 
 jobs:
+  nivelamento:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: shivammathur/setup-php@v2
+      with:
+        php-version: ${{ env.php-version }}
+      
+    - uses: actions/checkout@v3
+      with:
+        fetch-depth: 0
+
+    - name: Verificar nivelamentog
+      run: |
+        COMMITS_BEHIND=$(git rev-list --count $GITHUB_REF_NAME..origin/main);
+
+        if [[ $COMMITS_BEHIND -gt 0 ]]; then
+            echo "Branch desnivelada, $COMMITS_BEHIND commit(s) atrás da main."
+            exit 1;
+        fi
+
   padrao-de-codigo:
     runs-on: ubuntu-latest
 
@@ -22,6 +44,7 @@ jobs:
     - uses: shivammathur/setup-php@v2
       with:
         php-version: ${{ env.php-version }}
+
     - uses: actions/checkout@v3
 
     - name: Definir arquivo de ambiente
