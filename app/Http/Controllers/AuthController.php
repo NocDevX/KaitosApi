@@ -7,10 +7,11 @@ use App\Http\Requests\Auth\LoginRequest;
 use App\Models\User;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Http\JsonResponse;
 
 class AuthController extends Controller
 {
-    public function register(RegisterRequest $request)
+    public function register(RegisterRequest $request): JsonResponse
     {
         $user = User::create([
             'name' => $request->name,
@@ -24,7 +25,7 @@ class AuthController extends Controller
         ]);
     }
 
-    public function login(LoginRequest $request)
+    public function login(LoginRequest $request): JsonResponse
     {
         $credentials = request(['name', 'email', 'password']);
         $isAuthenticated = auth()->attempt($credentials);
@@ -32,7 +33,7 @@ class AuthController extends Controller
         if (!$isAuthenticated) {
             return response()->json([
                 'message' => 'O email e/ou senha enviados estão incorretos.',
-            ], 422);
+            ], 401);
         }
 
         $user = User::query();
