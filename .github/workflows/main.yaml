@@ -1,0 +1,111 @@
+name: Testes qualitativos
+
+on:
+  push:
+    branches:
+      - "master"
+      - "beta"
+      - "actions"
+
+env:
+  php-version: 8.1
+  psr: PSR12
+
+jobs:
+  nivelamento:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ env.php-version }}
+
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+
+      - name: Verificar nivelamento
+        run: |
+          COMMITS_BEHIND=$(git rev-list --count $GITHUB_REF_NAME..origin/master);
+
+          if [[ $COMMITS_BEHIND -gt 0 ]]; then
+              echo "Branch desnivelada, $COMMITS_BEHIND commit(s) atrás da master."
+              exit 1;
+          fi
+
+  padrao-de-codigo:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ env.php-version }}
+
+      - uses: actions/checkout@v3
+
+      - name: Definir arquivo de ambiente
+        run: php -r "file_exists('.env') || copy('.env.example', '.env');"
+
+      - name: Instalar Dependências
+        run: composer require squizlabs/php_codesniffer --working-dir tests -q --no-interaction --no-progress
+
+      - name: Verificar padrão de código
+        run: |
+          ./tests/vendor/bin/phpcs --standard=${{ env.psr }} ./app
+          ./tests/vendor/bin/phpcs --standard=${{ env.psr }} ./routes
+
+  testes-estruturais:
+    runs-on: ubuntu-latest
+    env:
+      DB_HOST: localhost
+      DB_CONNECTION: pgsql
+      DB_PASSWORD: postgres
+      DB_USERNAME: postgres
+      DB_DATABASE: postgres
+      APP_URL: localhost:8080
+      DB_PORT: 5432
+
+    services:
+      postgres:
+        image: postgres:14
+        ports:
+          - 5432:5432
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: postgres
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 3
+
+    steps:
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ env.php-version }}
+          extensions: mbstring, fileinfo, pgsql
+
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Definir arquivo de ambiente
+        run: php -r "file_exists('.env') || copy('.env.example', '.env');"
+
+      - name: Instalar Dependências
+        run: |
+          composer install -q --no-interaction --no-progress
+          php artisan key:generate
+
+      - name: Limpar cache/config
+        run: php artisan config:clear
+
+      - name: Executar migrations
+        run: php artisan migrate -v --seed
+
+      - name: Realizar testes
+        run: php artisan test
+
+      - name: Rollback migrations
+        run: php artisan migrate:rollback
