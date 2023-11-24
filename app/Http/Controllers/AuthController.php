@@ -5,12 +5,17 @@ namespace App\Http\Controllers;
 use App\Http\Requests\Auth\RegisterRequest;
 use App\Http\Requests\Auth\LoginRequest;
 use App\Models\User;
-use Illuminate\Support\Arr;
+use App\Services\AuthService;
+use App\Services\UserService;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Http\JsonResponse;
 
 class AuthController extends Controller
 {
+    public function __construct(private AuthService $service)
+    {
+    }
+
     public function register(RegisterRequest $request): JsonResponse
     {
         $user = User::create([
@@ -27,30 +32,19 @@ class AuthController extends Controller
 
     public function login(LoginRequest $request): JsonResponse
     {
-        $credentials = request(['name', 'email', 'password']);
-        $isAuthenticated = auth()->attempt($credentials);
-
-        if (!$isAuthenticated) {
-            return response()->json([
-                'message' => 'O email e/ou senha enviados estão incorretos.',
-            ], 401);
+        if (!$this->service->login()) {
+            return response()->json(
+                ['message' => 'O email e/ou senha enviados estão incorretos.'],
+                401
+            );
         }
 
-        $user = User::query();
+        $userService = new UserService();
+        $user = $userService->getUser($request);
 
-        if (Arr::get($credentials, 'name')) {
-            $user->where('name', $credentials['name']);
-        }
-
-        if (Arr::get($credentials, 'email')) {
-            $user->where('email', $credentials['email']);
-        }
-
-        $user = $user->first();
-
-        $user->tokens()->where('name', 'auth-token')->delete();
-        $authToken = $user->createToken('auth-token')->plainTextToken;
-
-        return response()->json(['token' => $authToken], 200);
+        return response()->json(
+            ['token' => $this->service->setAuthToken($user)],
+            200
+        );
     }
 }
