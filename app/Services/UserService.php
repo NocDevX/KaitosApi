@@ -4,16 +4,24 @@ namespace App\Services;
 
 use App\Models\User;
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Request;
 
 class UserService
 {
-    public function getUser(Request $request = null): Collection
+    /**
+     * @param Request|null $request
+     * @return Builder|Model|object|null
+     */
+    public function getUser(Request $request = null)
     {
-        return $this->buildQuery($request)->get();
+        return $this->buildQuery($request)->first();
     }
 
+    /**
+     * @param Request|null $request
+     * @return Builder
+     */
     protected function buildQuery(Request $request = null): Builder
     {
         $query = User::query();

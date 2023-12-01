@@ -7,6 +7,7 @@ use App\Http\Requests\Auth\LoginRequest;
 use App\Models\User;
 use App\Services\AuthService;
 use App\Services\UserService;
+use Exception;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Http\JsonResponse;
 
@@ -16,6 +17,10 @@ class AuthController extends Controller
     {
     }
 
+    /**
+     * @param RegisterRequest $request
+     * @return JsonResponse
+     */
     public function register(RegisterRequest $request): JsonResponse
     {
         $user = User::create([
@@ -30,6 +35,11 @@ class AuthController extends Controller
         ]);
     }
 
+    /**
+     * @param LoginRequest $request
+     * @return JsonResponse
+     * @throws Exception
+     */
     public function login(LoginRequest $request): JsonResponse
     {
         if (!$this->service->login()) {
@@ -39,12 +49,14 @@ class AuthController extends Controller
             );
         }
 
-        $userService = new UserService();
-        $user = $userService->getUser($request);
+        try {
+            $userService = new UserService();
+            $user = $userService->getUser($request);
+            $token = $this->service->setAuthToken($user);
+        } catch (Exception $e) {
+            throw new Exception('Erro ao autenticar usuário');
+        }
 
-        return response()->json(
-            ['token' => $this->service->setAuthToken($user)],
-            200
-        );
+        return response()->json(['token' => $token]);
     }
 }

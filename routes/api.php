@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\WalletController;
 use Illuminate\Support\Facades\Route;
 use Laravel\Sanctum\Http\Controllers\CsrfCookieController;
 
@@ -26,16 +27,6 @@ Route::get('users/forgot_password/{token}', [UserController::class, 'resetPasswo
 
 Route::middleware('auth:sanctum')->group(function () {
 
-    Route::get('/user', function () {
-        return response()->json([
-            [
-                'name' => 'wallet_1',
-                'value' => '127000.00'
-            ],
-            [
-                'name' => 'wallet_2',
-                'value' => '720.40'
-            ]
-        ], 200);
-    });
+    Route::post('wallet', [WalletController::class, 'create']);
+    Route::get('wallets/{user_id}', [WalletController::class, 'get']);
 });
