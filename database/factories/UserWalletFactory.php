@@ -6,6 +6,7 @@ use App\Models\User;
 use App\Models\UserWallet;
 use App\Models\Wallet;
 use Illuminate\Database\Eloquent\Factories\Factory;
+use Illuminate\Support\Facades\DB;
 
 /**
  * @extends Factory<UserWallet>
@@ -17,15 +18,8 @@ class UserWalletFactory extends Factory
      *
      * @return array<string, mixed>
      */
-    public function definition(): array
+    public function definition($uniqueCombinations = []): array
     {
-        return [
-            'user_id' => function () {
-                return User::query()->inRandomOrder()->first('id')->id;
-            },
-            'wallet_id' => function() {
-                return Wallet::query()->inRandomOrder()->first()->id;
-            }
-        ];
+        return [];
     }
 }
