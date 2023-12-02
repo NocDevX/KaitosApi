@@ -4,7 +4,6 @@ namespace Database\Seeders;
 
 use App\Models\User;
 use App\Models\UserWallet;
-use Database\Seeders;
 use App\Models\Wallet;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
@@ -32,7 +31,7 @@ class DatabaseSeeder extends Seeder
             FROM users
                 JOIN wallets ON true
                 WHERE NOT EXISTS (
-                    SELECT 1 FROM user_wallets WHERE user_id = users.id AND wallet_id = wallets.id
+                    SELECT 1 FROM user_wallet WHERE user_id = users.id AND wallet_id = wallets.id
                    )
             ORDER BY 1, 2
         SQL

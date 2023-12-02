@@ -2,11 +2,8 @@
 
 namespace Database\Factories;
 
-use App\Models\User;
 use App\Models\UserWallet;
-use App\Models\Wallet;
 use Illuminate\Database\Eloquent\Factories\Factory;
-use Illuminate\Support\Facades\DB;
 
 /**
  * @extends Factory<UserWallet>
@@ -18,7 +15,7 @@ class UserWalletFactory extends Factory
      *
      * @return array<string, mixed>
      */
-    public function definition($uniqueCombinations = []): array
+    public function definition(): array
     {
         return [];
     }

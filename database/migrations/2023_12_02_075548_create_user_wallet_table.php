@@ -13,13 +13,11 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('user_wallets', function (Blueprint $table) {
-            $table->id();
+        Schema::create('user_wallet', function (Blueprint $table) {
             $table->foreignId('user_id')->constrained();
             $table->foreignId('wallet_id')->constrained();
 
             $table->unique(['user_id', 'wallet_id']);
-            $table->timestamps();
         });
     }
 
@@ -30,6 +28,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('user_wallets');
+        Schema::dropIfExists('user_wallet');
     }
 };

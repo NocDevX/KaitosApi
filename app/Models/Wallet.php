@@ -10,7 +10,7 @@ class Wallet extends Model
 {
     use HasFactory;
 
-    public function user (): BelongsToMany
+    public function user(): BelongsToMany
     {
         return $this->belongsToMany(User::class, UserWallet::class);
     }
