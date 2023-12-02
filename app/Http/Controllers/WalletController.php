@@ -12,7 +12,7 @@ class WalletController extends Controller
 
     public function get(User $user)
     {
-        $wallets = $user->wallets();
-        dump($wallets);
+        $user = $user->load('wallets');
+        dump($user);
     }
 }

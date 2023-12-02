@@ -28,5 +28,5 @@ Route::get('users/forgot_password/{token}', [UserController::class, 'resetPasswo
 Route::middleware('auth:sanctum')->group(function () {
 
     Route::post('wallet', [WalletController::class, 'create']);
-    Route::get('wallets/{user_id}', [WalletController::class, 'get']);
+    Route::get('wallets/{user}', [WalletController::class, 'get']);
 });
