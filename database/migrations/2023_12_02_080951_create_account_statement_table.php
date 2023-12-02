@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateBrokersTable extends Migration
+return new class extends Migration
 {
     /**
      * Run the migrations.
@@ -13,9 +13,12 @@ class CreateBrokersTable extends Migration
      */
     public function up()
     {
-        Schema::create('brokers', function (Blueprint $table) {
+        Schema::create('account_statement', function (Blueprint $table) {
             $table->id();
-            $table->string('name', 32);
+            $table->foreignId('user_id');
+            $table->double('closingBalance');
+            $table->double('totalDebit');
+            $table->double('totalCredit');
             $table->timestamps();
         });
     }
@@ -27,6 +30,6 @@ class CreateBrokersTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('brokers');
+        Schema::dropIfExists('account_statement');
     }
-}
+};
