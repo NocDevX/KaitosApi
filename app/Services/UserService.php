@@ -13,7 +13,7 @@ class UserService
      * @param Request|null $request
      * @return Builder|Model|object|null
      */
-    public function getUser(Request $request = null)
+    public function get(Request $request = null)
     {
         return $this->buildQuery($request)->first();
     }

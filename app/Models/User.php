@@ -2,12 +2,19 @@
 
 namespace App\Models;
 
+use App\Models\Scopes\ActiveScope;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
 
+/**
+ * @property $id
+ * @property $name
+ * @property $email
+ * @property $active
+ */
 class User extends Authenticatable
 {
     use HasApiTokens;
@@ -23,6 +30,7 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
+        'active'
     ];
 
     /**
@@ -47,5 +55,15 @@ class User extends Authenticatable
     public function wallets(): BelongsToMany
     {
         return $this->belongsToMany(Wallet::class, UserWallet::class);
+    }
+
+    protected static function booted()
+    {
+        static::addGlobalScope(new ActiveScope());
+    }
+
+    public function scopeActive($query)
+    {
+        return $query->where('active', true);
     }
 }

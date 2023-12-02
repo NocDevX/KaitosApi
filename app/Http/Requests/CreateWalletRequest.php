@@ -7,7 +7,7 @@ use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Http\Exceptions\HttpResponseException;
 use Illuminate\Support\Facades\Auth;
 
-class GetUserRequest extends FormRequest
+class CreateWalletRequest extends FormRequest
 {
     /**
      * Throw validation errors
@@ -39,7 +39,7 @@ class GetUserRequest extends FormRequest
     public function rules()
     {
         return [
-            'user' => 'required|integer'
+            'name' => 'required|string|max:64',
         ];
     }
 }

@@ -26,7 +26,8 @@ Route::post('users/forgot_password', [UserController::class, 'forgotPassword'])-
 Route::get('users/forgot_password/{token}', [UserController::class, 'resetPassword'])->name('password.reset');
 
 Route::middleware('auth:sanctum')->group(function () {
-
-    Route::post('wallet', [WalletController::class, 'create']);
-    Route::get('wallets/{user}', [WalletController::class, 'get'])->where('user', '[0-9]+');
+    Route::post('wallet/{user}', [WalletController::class, 'create']);
+    Route::get('wallets/{user}', [WalletController::class, 'get']);
+    Route::post('wallet/{wallet}/deactivate', [WalletController::class, 'deactivate']);
+    Route::delete('wallet/{wallet}/user/{user}', [WalletController::class, 'delete']);
 });

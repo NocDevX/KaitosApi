@@ -51,7 +51,7 @@ class AuthController extends Controller
 
         try {
             $userService = new UserService();
-            $user = $userService->getUser($request);
+            $user = $userService->get($request);
             $token = $this->service->setAuthToken($user);
         } catch (Exception $e) {
             throw new Exception('Erro ao autenticar usuário');

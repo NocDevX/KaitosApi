@@ -19,6 +19,7 @@ class CreateTransactionsTable extends Migration
             $table->foreignId('category_id')->constrained();
             $table->foreignId('wallet_id')->constrained();
             $table->foreignId('transaction_type_id')->constrained();
+            $table->boolean('active')->default(true);
             $table->timestamps();
         });
     }
