@@ -15,7 +15,7 @@ class WalletService
      * @param CreateWalletRequest $request
      * @return Wallet
      */
-    public function save(Wallet $wallet, User $user, CreateWalletRequest $request): Wallet
+    public function save(User $user, CreateWalletRequest $request): Wallet
     {
         $wallet = new Wallet();
         $wallet->name = $request->get('name');
@@ -34,7 +34,7 @@ class WalletService
      * @param Wallet $wallet
      * @return bool
      */
-    public function delete(User $user, Wallet $wallet): boolean
+    public function delete(User $user, Wallet $wallet): bool
     {
         $userWallets = new UserWallet();
         $userWallets = $userWallets->where([
