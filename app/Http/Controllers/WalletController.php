@@ -60,7 +60,7 @@ class WalletController extends Controller
      * @return bool
      * @throws \Exception
      */
-    public function delete(User $user, Wallet $wallet, WalletService $service): bool
+    public function delete(Wallet $wallet, User $user, WalletService $service): bool
     {
         DB::beginTransaction();
         try {

@@ -6,16 +6,16 @@ use App\Http\Requests\CreateWalletRequest;
 use App\Models\User;
 use App\Models\UserWallet;
 use App\Models\Wallet;
-use Illuminate\Support\Facades\DB;
 
 class WalletService
 {
     /**
+     * @param Wallet $wallet
      * @param User $user
      * @param CreateWalletRequest $request
      * @return Wallet
      */
-    public function save(User $user, CreateWalletRequest $request): Wallet
+    public function save(Wallet $wallet, User $user, CreateWalletRequest $request): Wallet
     {
         $wallet = new Wallet();
         $wallet->name = $request->get('name');
@@ -29,12 +29,24 @@ class WalletService
         return $wallet;
     }
 
-    public function delete(User $user, Wallet $wallet)
+    /**
+     * @param User $user
+     * @param Wallet $wallet
+     * @return bool
+     */
+    public function delete(User $user, Wallet $wallet): boolean
     {
-        $userWallet = new UserWallet();
-        $userWallet->where([
-            'user_id' => $user->id,
+        $userWallets = new UserWallet();
+        $userWallets = $userWallets->where([
             'wallet_id' => $wallet->id
-        ])->get();
+        ])->with('wallet')->get();
+
+        foreach ($userWallets as $userWallet) {
+            $userWallet->where(['wallet_id' => $userWallet->wallet_id])->delete();
+        }
+
+        $wallet->delete();
+
+        return true;
     }
 }
