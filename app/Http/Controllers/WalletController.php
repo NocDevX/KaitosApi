@@ -7,8 +7,10 @@ use App\Models\User;
 use App\Models\Wallet;
 use App\Services\WalletService;
 use Exception;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
+use Throwable;
 
 class WalletController extends Controller
 {
@@ -16,9 +18,11 @@ class WalletController extends Controller
      * @param User $user
      * @return Collection
      */
-    public function get(User $user): Collection
+    public function get(User $user): JsonResponse
     {
-        return collect($user->wallets()->get());
+        return response()->json([
+            'wallets' => $user->wallets()->get()
+        ]);
     }
 
     /**
@@ -28,28 +32,32 @@ class WalletController extends Controller
      * @return mixed
      * @throws Exception
      */
-    public function create(User $user, CreateWalletRequest $request, WalletService $service): Wallet
+    public function create(User $user, CreateWalletRequest $request, WalletService $service): JsonResponse
     {
-        DB::beginTransaction();
         try {
             $wallet = $service->save($user, $request);
-        } catch (Exception $e) {
-            DB::rollBack();
+        } catch (Throwable $e) {
             throw new Exception(__('customexceptions.save_wallet'));
         }
 
-        DB::commit();
-        return $wallet;
+        return response()->json(['wallet' => $wallet]);
     }
 
     /**
      * @param Wallet $wallet
-     * @return void
+     * @param WalletService $service
+     * @return JsonResponse
+     * @throws Exception
      */
-    public function deactivate(Wallet $wallet): void
+    public function deactivate(Wallet $wallet, WalletService $service): JsonResponse
     {
-        $wallet->active = false;
-        $wallet->save();
+        try {
+            $walletWasDeactivated = $service->deactivate($wallet);
+        } catch (Throwable $e) {
+            throw new Exception(__('customexceptions.deactivate_wallet'));
+        }
+
+        return response()->json(['success' => $walletWasDeactivated]);
     }
 
     /**
@@ -59,17 +67,14 @@ class WalletController extends Controller
      * @return bool
      * @throws Exception
      */
-    public function delete(Wallet $wallet, User $user, WalletService $service): bool
+    public function delete(Wallet $wallet, User $user, WalletService $service): JsonResponse
     {
-        DB::beginTransaction();
         try {
-            $service->delete($user, $wallet);
-        } catch (Exception $e) {
-            DB::rollBack();
+            $successful = $service->delete($user, $wallet);
+        } catch (Throwable $e) {
             throw new Exception(__('customexceptions.delete_wallet'));
         }
 
-        DB::commit();
-        return true;
+        return response()->json(['successful' => $successful]);
     }
 }
