@@ -1,19 +1,26 @@
 <?php
 
-namespace App\Http\Requests\Auth;
+namespace App\Http\Requests\User;
 
 use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Http\Exceptions\HttpResponseException;
+use Illuminate\Validation\Rules\Password;
 
-class LoginRequest extends FormRequest
+/**
+ * @property $name
+ * @property $email
+ * @property $password
+ */
+class CreateUserRequest extends FormRequest
 {
     /**
      * Throw validation errors
      *
+     * @param Validator $validator
      * @return void
      */
-    public function failedValidation(Validator $validator)
+    public function failedValidation(Validator $validator): void
     {
         $response = response()->json($validator->errors()->messages(), 422);
 
@@ -25,7 +32,7 @@ class LoginRequest extends FormRequest
      *
      * @return bool
      */
-    public function authorize()
+    public function authorize(): bool
     {
         return true;
     }
@@ -35,11 +42,16 @@ class LoginRequest extends FormRequest
      *
      * @return array<string, mixed>
      */
-    public function rules()
+    public function rules(): array
     {
         return [
-            'email' => 'required|string|email',
-            'password' => 'required|string'
+            'name' => 'required|string',
+            'email' => 'unique:users|required|email',
+            'password' => [
+                'required',
+                'string',
+                Password::defaults()
+            ]
         ];
     }
 }

@@ -23,7 +23,7 @@ class WalletFactory extends Factory
         $createdAt = fake()->dateTimeBetween($oldestUser->created_at);
 
         return [
-            'name' => fake()->name(),
+            'name' => mb_substr(fake()->company(), 0, 64),
             'created_at' => $createdAt,
             'updated_at' => fake()->dateTimeBetween($createdAt)
         ];

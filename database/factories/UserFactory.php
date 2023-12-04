@@ -16,7 +16,7 @@ class UserFactory extends Factory
     {
         $createdAt = fake()->dateTimeBetween('-10 years');
         return [
-            'name' => substr(fake()->name(), 0, 32),
+            'name' => fake()->name(),
             'email' => fake()->unique()->safeEmail(),
             'email_verified_at' => fake()->dateTimeBetween($createdAt),
             'password' =>Hash::make('password'),

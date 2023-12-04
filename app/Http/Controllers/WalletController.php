@@ -6,10 +6,9 @@ use App\Http\Requests\CreateWalletRequest;
 use App\Models\User;
 use App\Models\Wallet;
 use App\Services\WalletService;
+use Exception;
 use Illuminate\Support\Collection;
-use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\DB;
-use PHPUnit\Framework\Exception;
 
 class WalletController extends Controller
 {
@@ -19,7 +18,7 @@ class WalletController extends Controller
      */
     public function get(User $user): Collection
     {
-        return collect($user->load('wallets'));
+        return collect($user->wallets()->get());
     }
 
     /**
@@ -27,16 +26,16 @@ class WalletController extends Controller
      * @param CreateWalletRequest $request
      * @param WalletService $service
      * @return mixed
-     * @throws \Exception
+     * @throws Exception
      */
     public function create(User $user, CreateWalletRequest $request, WalletService $service): Wallet
     {
         DB::beginTransaction();
         try {
             $wallet = $service->save($user, $request);
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             DB::rollBack();
-            throw new \Exception(trans('customexceptions.save_wallet'));
+            throw new Exception(__('customexceptions.save_wallet'));
         }
 
         DB::commit();
@@ -47,7 +46,7 @@ class WalletController extends Controller
      * @param Wallet $wallet
      * @return void
      */
-    public function deactivate(Wallet $wallet)
+    public function deactivate(Wallet $wallet): void
     {
         $wallet->active = false;
         $wallet->save();
@@ -58,16 +57,16 @@ class WalletController extends Controller
      * @param Wallet $wallet
      * @param WalletService $service
      * @return bool
-     * @throws \Exception
+     * @throws Exception
      */
     public function delete(Wallet $wallet, User $user, WalletService $service): bool
     {
         DB::beginTransaction();
         try {
             $service->delete($user, $wallet);
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             DB::rollBack();
-            throw new \Exception(__('customexceptions.delete_wallet'));
+            throw new Exception(__('customexceptions.delete_wallet'));
         }
 
         DB::commit();

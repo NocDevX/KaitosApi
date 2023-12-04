@@ -1,33 +1,26 @@
 <?php
 
-use App\Http\Controllers\AuthController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\WalletController;
 use Illuminate\Support\Facades\Route;
 use Laravel\Sanctum\Http\Controllers\CsrfCookieController;
 
-/*
-|--------------------------------------------------------------------------
-| API Routes
-|--------------------------------------------------------------------------
-|
-| Here is where you can register API routes for your application. These
-| routes are loaded by the RouteServiceProvider within a group which
-| is assigned the "api" middleware group. Enjoy building your API!
-|
-*/
-
+// User
 Route::get('csrf_cookie', [CsrfCookieController::class, 'show']);
+Route::post('user/create', [UserController::class, 'create'])->name('user.create');
+Route::prefix('user')->group(function () {
+    Route::post('login', [UserController::class, 'login'])->name('user.login');
+    Route::post('forgot_password', [UserController::class, 'forgotPassword']);
+    Route::get('forgot_password/{token}', [UserController::class, 'resetPassword']);
+});
 
-Route::post('auth/register', [AuthController::class, 'register'])->name('auth.register');
-Route::post('auth/login', [AuthController::class, 'login'])->name('auth.login');
-
-Route::post('users/forgot_password', [UserController::class, 'forgotPassword'])->name('password.request');
-Route::get('users/forgot_password/{token}', [UserController::class, 'resetPassword'])->name('password.reset');
-
+// Wallets
 Route::middleware('auth:sanctum')->group(function () {
-    Route::post('wallet/{user}', [WalletController::class, 'create']);
     Route::get('wallets/{user}', [WalletController::class, 'get']);
-    Route::post('wallet/{wallet}/deactivate', [WalletController::class, 'deactivate']);
-    Route::delete('wallet/{wallet}/user/{user}', [WalletController::class, 'delete']);
+
+    Route::prefix('wallet')->group(function () {
+        Route::post('{user}', [WalletController::class, 'create']);
+        Route::post('{wallet}/deactivate', [WalletController::class, 'deactivate']);
+        Route::delete('{wallet}/user/{user}', [WalletController::class, 'delete']);
+    });
 });
