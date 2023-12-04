@@ -92,6 +92,7 @@ class UserController extends Controller
                 $user->save();
 
                 event(new PasswordReset($user));
-            });
+            }
+        );
     }
 }
