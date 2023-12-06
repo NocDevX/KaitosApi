@@ -40,7 +40,7 @@ class WalletController extends Controller
             throw new Exception(__('customexceptions.save_wallet'));
         }
 
-        return response()->json(['wallet' => $wallet]);
+        return response()->json(['wallet' => $wallet], 201);
     }
 
     /**

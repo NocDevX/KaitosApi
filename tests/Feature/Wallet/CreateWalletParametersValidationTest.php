@@ -43,7 +43,7 @@ class CreateWalletParametersValidationTest extends TestCase
     public static function provideValidParameters(): array
     {
         return [
-            'request_should_succeed_name_has_a_valid_lenght' => [[
+            'has_a_valid_lenght' => [[
                 'name' => fake()->text(64)
             ]]
         ];
@@ -55,14 +55,14 @@ class CreateWalletParametersValidationTest extends TestCase
     public static function provideInvalidParameters(): array
     {
         return [
-            'request_should_fail_when_no_parameters_are_provided' => [[]],
-            'request_should_fail_when_name_is_over_accepted_lenght' => [[
+            'no_parameters_provided' => [[]],
+            'name_is_over_accepted_lenght' => [[
                 'name' => Str::random(65)
             ]],
-            'request_should_fail_when_name_is_an_integer' => [[
+            'name_is_an_integer' => [[
                 'name' => fake()->numberBetween()
             ]],
-            'request_should_fail_when_name_is_an_array' => [[
+            'name_is_an_array' => [[
                 'name' => []
             ]],
         ];

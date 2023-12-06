@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\Feature\Authentication;
+namespace Tests\Feature\User;
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use PHPUnit\Framework\Attributes\DataProvider;
@@ -35,16 +35,16 @@ class CreateUserParametersValidationTest extends TestCase
     public static function provideInvalidParameters(): array
     {
         return [
-            'request_should_fail_when_no_parameters_are_provided' => [[]],
-            'request_should_fail_when_missing_name' => [[
+            'no_parameters_are_provided' => [[]],
+            'missing_name' => [[
                 'email' => 'thisEmailIsReal@gmail.com',
                 'password' => 'aTotallyValidPassword1234$'
             ]],
-            'request_should_fail_when_missing_email' => [[
+            'missing_email' => [[
                 'name' => 'ACreatineUser',
                 'password' => 'aTotallyValidPassword1234$'
             ]],
-            'request_should_fail_when_missing_password' => [[
+            'missing_password' => [[
                 'name' => 'ACreatineUser',
                 'email' => 'thisEmailIsReal@gmail.com',
             ]],
