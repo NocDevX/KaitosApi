@@ -15,7 +15,7 @@ return new class extends Migration
     {
         Schema::create('account_statement', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('user_id');
+            $table->foreignId('user_id')->constrained();
             $table->double('closingBalance');
             $table->double('totalDebit');
             $table->double('totalCredit');
