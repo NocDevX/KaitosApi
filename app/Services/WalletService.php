@@ -34,15 +34,14 @@ class WalletService
     }
 
     /**
-     * @param User $user
      * @param Wallet $wallet
      * @return bool
-     * @throws Throwable
+     * @throws Exception
      */
-    public function delete(User $user, Wallet $wallet): bool
+    public function delete(Wallet $wallet): bool
     {
         if (!$this->belongsToUser($wallet->id)) {
-            return false;
+            throw new Exception(__('customexceptions.permission_denied_wallet'));
         }
 
         DB::transaction(function () use ($wallet) {
@@ -60,10 +59,10 @@ class WalletService
      * @throws Exception
      * @throws Throwable
      */
-    public function deactivate(Wallet $wallet): bool
+    public function update(Wallet $wallet): bool
     {
         if (!$this->belongsToUser($wallet->id)) {
-            return false;
+            throw new Exception(__('customexceptions.permission_denied_wallet'));
         }
 
         $wallet->active = false;

@@ -20,7 +20,7 @@ Route::middleware('auth:sanctum')->group(function () {
 
     Route::prefix('wallet')->group(function () {
         Route::post('{user}', [WalletController::class, 'create']);
-        Route::post('{wallet}/deactivate', [WalletController::class, 'deactivate']);
-        Route::delete('{wallet}/user/{user}', [WalletController::class, 'delete']);
+        Route::patch('{wallet}', [WalletController::class, 'update']);
+        Route::delete('{wallet}', [WalletController::class, 'delete']);
     });
 });

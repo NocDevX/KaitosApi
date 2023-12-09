@@ -16,13 +16,11 @@ class WalletController extends Controller
 {
     /**
      * @param User $user
-     * @return Collection
+     * @return JsonResponse
      */
     public function get(User $user): JsonResponse
     {
-        return response()->json([
-            'wallets' => $user->wallets()->get()
-        ]);
+        return response()->json($user->wallets()->get());
     }
 
     /**
@@ -37,7 +35,7 @@ class WalletController extends Controller
         try {
             $wallet = $service->save($user, $request);
         } catch (Throwable $e) {
-            throw new Exception(__('customexceptions.save_wallet'));
+            throw new Exception($e->getMessage());
         }
 
         return response()->json(['wallet' => $wallet], 201);
@@ -49,32 +47,32 @@ class WalletController extends Controller
      * @return JsonResponse
      * @throws Exception
      */
-    public function deactivate(Wallet $wallet, WalletService $service): JsonResponse
+    public function update(Wallet $wallet, WalletService $service): JsonResponse
     {
         try {
-            $walletWasDeactivated = $service->deactivate($wallet);
+            $walletWasDeactivated = $service->update($wallet);
         } catch (Throwable $e) {
-            throw new Exception(__('customexceptions.deactivate_wallet'));
+            throw new Exception($e->getMessage());
         }
 
-        return response()->json(['success' => $walletWasDeactivated]);
+        return response()->json(['success' => $walletWasDeactivated], 204);
     }
 
     /**
-     * @param User $user
      * @param Wallet $wallet
+     * @param User $user
      * @param WalletService $service
-     * @return bool
+     * @return JsonResponse
      * @throws Exception
      */
     public function delete(Wallet $wallet, User $user, WalletService $service): JsonResponse
     {
         try {
-            $successful = $service->delete($user, $wallet);
+            $successful = $service->delete($wallet);
         } catch (Throwable $e) {
-            throw new Exception(__('customexceptions.delete_wallet'));
+            throw new Exception($e->getMessage());
         }
 
-        return response()->json(['successful' => $successful]);
+        return response()->json(['successful' => $successful], 204);
     }
 }
