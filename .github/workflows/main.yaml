@@ -5,7 +5,10 @@ on:
     branches:
       - "master"
       - "beta"
-      - "actions"
+  pull_request:
+    branches:
+      - "master"
+      - "beta"
 
 env:
   php-version: 8.1
